@@ -15,6 +15,8 @@ import eu.noobioh.ttfl_cracker.balldontlie.BallDontLieCrawler;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.Game;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.GameParams;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.Player;
+import eu.noobioh.ttfl_cracker.balldontlie.dto.Stat;
+import eu.noobioh.ttfl_cracker.balldontlie.dto.StatParams;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.Team;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.utils.DataPageWrapper;
 
@@ -74,5 +76,30 @@ public class TestResource {
 	@GetMapping("/game/{id}")
 	public Game getGame(@PathVariable int id) {
 		return ballDontLieCrawler.getGame(id);
+	}
+
+	@GetMapping("/stats")
+	public DataPageWrapper<Stat> getStats(
+			@RequestParam Integer page,
+			@DateTimeFormat(pattern = "yyyy-MM-dd")
+			@RequestParam(required = false) List<LocalDate> dates,
+			@RequestParam(required = false) List<Integer> seasons,
+			@RequestParam(required = false) List<Integer> playerIds,
+			@RequestParam(required = false) List<Integer> gameIds,
+			@RequestParam(required = false) Boolean postseason,
+			@DateTimeFormat(pattern = "yyyy-MM-dd")
+			@RequestParam(required = false) LocalDate startDate,
+			@DateTimeFormat(pattern = "yyyy-MM-dd")
+			@RequestParam(required = false) LocalDate endDate) {
+		StatParams params = StatParams.builder()
+				.dates(dates)
+				.seasons(seasons)
+				.playerIds(playerIds)
+				.gameIds(gameIds)
+				.postseason(postseason)
+				.startDate(startDate)
+				.endDate(endDate)
+				.build();
+		return ballDontLieCrawler.getStats(page, params);
 	}
 }

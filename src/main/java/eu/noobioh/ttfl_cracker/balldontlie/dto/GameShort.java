@@ -9,21 +9,17 @@ import eu.noobioh.ttfl_cracker.utils.MultiLocalDateTimeDeserializer;
 import lombok.Data;
 
 @Data
-public class Game {
+public class GameShort {
 	private Long id;
 	@JsonDeserialize(using = MultiLocalDateTimeDeserializer.class)
     private LocalDateTime date;
+    @JsonAlias("home_team_id")
+    private Long homeTeamId;
     @JsonAlias("home_team_score")
     private Integer homeTeamScore;
+    @JsonAlias("visitor_team_id")
+    private Long visitorTeamId;
     @JsonAlias("visitor_team_score")
     private Integer visitorTeamScore;
     private Integer season;
-    private Integer period;
-    private String status;
-    private String time;
-    private Boolean postseason;
-    @JsonAlias("home_team")
-    private Team homeTeam;
-    @JsonAlias("visitor_team")
-    private Team visitorTeam;
 }

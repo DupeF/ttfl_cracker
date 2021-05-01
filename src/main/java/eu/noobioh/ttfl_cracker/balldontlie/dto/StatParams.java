@@ -11,8 +11,8 @@ import lombok.Data;
 public class StatParams {
 	private final List<LocalDate> dates;
 	private final List<Integer> seasons;
-	private final List<Integer> playerIds;
-	private final List<Integer> gameIds;
+	private final List<Long> playerIds;
+	private final List<Long> gameIds;
 	private final Boolean postseason;
 	private final LocalDate startDate;
 	private final LocalDate endDate;

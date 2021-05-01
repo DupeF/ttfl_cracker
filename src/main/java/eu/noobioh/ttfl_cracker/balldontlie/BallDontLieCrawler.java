@@ -1,5 +1,7 @@
 package eu.noobioh.ttfl_cracker.balldontlie;
 
+import java.util.List;
+
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
@@ -10,10 +12,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.Game;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.GameParams;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.Player;
+import eu.noobioh.ttfl_cracker.balldontlie.dto.SeasonAverage;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.Stat;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.StatParams;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.Team;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.utils.DataPageWrapper;
+import eu.noobioh.ttfl_cracker.balldontlie.dto.utils.DataWrapper;
 import io.netty.resolver.DefaultAddressResolverGroup;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
@@ -52,7 +56,7 @@ public class BallDontLieCrawler {
 		return body;
 	}
 	
-	public Player getPlayer(int id) {
+	public Player getPlayer(long id) {
 		Mono<Player> request = webClient.get()
 				.uri("/players/" + id)
 				.retrieve()
@@ -79,7 +83,7 @@ public class BallDontLieCrawler {
 		return body;
 	}
 	
-	public Team getTeam(int id) {
+	public Team getTeam(long id) {
 		Mono<Team> request = webClient.get()
 				.uri("/teams/" + id)
 				.retrieve()
@@ -130,7 +134,7 @@ public class BallDontLieCrawler {
 		return body;
 	}
 	
-	public Game getGame(int id) {
+	public Game getGame(long id) {
 		Mono<Game> request = webClient.get()
 				.uri("/games/" + id)
 				.retrieve()
@@ -181,6 +185,24 @@ public class BallDontLieCrawler {
 				.retrieve()
 				.bodyToMono(new ParameterizedTypeReference<DataPageWrapper<Stat>>(){});
 		DataPageWrapper<Stat> body = request.block();
+		return body;
+	}
+	
+	public DataWrapper<SeasonAverage> getSeasonAverages(List<Long> playerIds, Integer season) {
+		Mono<DataWrapper<SeasonAverage>> request = webClient.get()
+				.uri(uriBuilder -> {
+					uriBuilder.path("/season_averages");
+					if (!CollectionUtils.isEmpty(playerIds)) {
+						uriBuilder.queryParam("player_ids[]", playerIds);
+					}
+					if (season != null) {
+						uriBuilder.queryParam("season", season);
+					}
+					return uriBuilder.build();
+				})
+				.retrieve()
+				.bodyToMono(new ParameterizedTypeReference<DataWrapper<SeasonAverage>>(){});
+		DataWrapper<SeasonAverage> body = request.block();
 		return body;
 	}
 

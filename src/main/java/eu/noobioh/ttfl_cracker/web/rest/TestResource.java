@@ -15,10 +15,12 @@ import eu.noobioh.ttfl_cracker.balldontlie.BallDontLieCrawler;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.Game;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.GameParams;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.Player;
+import eu.noobioh.ttfl_cracker.balldontlie.dto.SeasonAverage;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.Stat;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.StatParams;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.Team;
 import eu.noobioh.ttfl_cracker.balldontlie.dto.utils.DataPageWrapper;
+import eu.noobioh.ttfl_cracker.balldontlie.dto.utils.DataWrapper;
 
 @RestController
 @RequestMapping("/api/v1/test")
@@ -35,7 +37,7 @@ public class TestResource {
 	}
 
 	@GetMapping("/player/{id}")
-	public Player getPlayer(@PathVariable int id) {
+	public Player getPlayer(@PathVariable long id) {
 		return ballDontLieCrawler.getPlayer(id);
 	}
 
@@ -46,7 +48,7 @@ public class TestResource {
 	}
 
 	@GetMapping("/team/{id}")
-	public Team getTeam(@PathVariable int id) {
+	public Team getTeam(@PathVariable long id) {
 		return ballDontLieCrawler.getTeam(id);
 	}
 
@@ -56,7 +58,7 @@ public class TestResource {
 			@DateTimeFormat(pattern = "yyyy-MM-dd")
 			@RequestParam(required = false) List<LocalDate> dates,
 			@RequestParam(required = false) List<Integer> seasons,
-			@RequestParam(required = false) List<Integer> teamIds,
+			@RequestParam(required = false) List<Long> teamIds,
 			@RequestParam(required = false) Boolean postseason,
 			@DateTimeFormat(pattern = "yyyy-MM-dd")
 			@RequestParam(required = false) LocalDate startDate,
@@ -74,7 +76,7 @@ public class TestResource {
 	}
 
 	@GetMapping("/game/{id}")
-	public Game getGame(@PathVariable int id) {
+	public Game getGame(@PathVariable long id) {
 		return ballDontLieCrawler.getGame(id);
 	}
 
@@ -84,8 +86,8 @@ public class TestResource {
 			@DateTimeFormat(pattern = "yyyy-MM-dd")
 			@RequestParam(required = false) List<LocalDate> dates,
 			@RequestParam(required = false) List<Integer> seasons,
-			@RequestParam(required = false) List<Integer> playerIds,
-			@RequestParam(required = false) List<Integer> gameIds,
+			@RequestParam(required = false) List<Long> playerIds,
+			@RequestParam(required = false) List<Long> gameIds,
 			@RequestParam(required = false) Boolean postseason,
 			@DateTimeFormat(pattern = "yyyy-MM-dd")
 			@RequestParam(required = false) LocalDate startDate,
@@ -101,5 +103,12 @@ public class TestResource {
 				.endDate(endDate)
 				.build();
 		return ballDontLieCrawler.getStats(page, params);
+	}
+
+	@GetMapping("/season_averages")
+	public DataWrapper<SeasonAverage> getSeasonAverages(
+			@RequestParam List<Long> playerIds,
+			@RequestParam(required = false) Integer season) {
+		return ballDontLieCrawler.getSeasonAverages(playerIds, season);
 	}
 }
